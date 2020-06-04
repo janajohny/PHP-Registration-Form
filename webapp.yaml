@@ -104,4 +104,19 @@ spec:
         backend:
           serviceName: webapp
           servicePort: 80
-
+      - path: /logout.php
+        backend:
+          serviceName: webapp
+          servicePort: 80
+      - path: /register.php
+        backend:
+          serviceName: webapp
+          servicePort: 80
+      - path: /index.php
+        backend:
+          serviceName: webapp
+          servicePort: 80
+      - path: /dbconnect.php
+        backend:
+          serviceName: webapp
+          servicePort: 80
