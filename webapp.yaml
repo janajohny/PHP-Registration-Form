@@ -1,0 +1,107 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: webapp-webapp
+  replicas: 2 # tells deployment to run 1 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: webapp-webapp
+    spec:
+      containers:
+      - name: webapp
+        image: janajks/php-registration-form_www:v1
+        ports:
+        - containerPort: 80
+        env:
+        -  name: MYSQL_ROOT_PASSWORD
+           value: pass
+        -  name: MYSQL_DATABASE
+           value: db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: webapp-mysql
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: webapp-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: janajks/mysql:5.7
+        ports:
+        - containerPort: 3306
+        env:
+        -  name: MYSQL_ROOT_PASSWORD
+           value: pass
+        -  name: MYSQL_DATABASE
+           value: db
+        volumeMounts:
+          - mountPath: "/var/lib/mysql"
+            name: webapp-storage
+      volumes:
+        - name: webapp-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+  labels:
+    app: webapp-webapp
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      name: webapp-port
+  selector:
+    app: webapp-webapp
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: webapp-mysql
+spec:
+  ports:
+    - port: 3306
+      name: db-port
+  selector:
+    app: webapp-mysql
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host:
+    http:
+      paths:
+      - path: /login.php
+        backend:
+          serviceName: webapp
+          servicePort: 80
+
