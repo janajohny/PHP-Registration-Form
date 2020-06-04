@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![CircleCI](https://circleci.com/gh/laur1s/PHP-Registration-Form.svg?style=svg)](https://circleci.com/gh/laur1s/PHP-Registration-Form)
 
 # Users Login and Registration Template
@@ -40,3 +41,6 @@ Form is using MySQL Prepared Statements and password encryption using SHA-256.
 
 ## Use
 Feel free to modify the template according your needs and push the code if you make any improvements!
+=======
+# PHP-Registration-Form
+>>>>>>> ee8aace2f5110abbedc1200e450ac258107dfdc7
